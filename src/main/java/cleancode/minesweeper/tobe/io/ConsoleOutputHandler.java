@@ -3,7 +3,6 @@ package cleancode.minesweeper.tobe.io;
 import cleancode.minesweeper.tobe.GameBoard;
 import cleancode.minesweeper.tobe.GameException;
 import cleancode.minesweeper.tobe.cell.CellSnapshot;
-import cleancode.minesweeper.tobe.io.sign.CellSignFinder;
 import cleancode.minesweeper.tobe.io.sign.CellSignProvider;
 import cleancode.minesweeper.tobe.positon.CellPosition;
 import java.util.stream.Collectors;
@@ -63,15 +62,15 @@ public class ConsoleOutputHandler implements OutputHandler {
         System.out.println(e.getMessage());
     }
 
-    @Override
-    public void showSimpleMessage(String message) {
-        System.out.println(message);
-    }
-
     private String generateColAlphabets(GameBoard board) {
         return IntStream.range(0, board.getColSize())
             .mapToObj(index -> String.valueOf((char) ('a' + index)))
             .collect(Collectors.joining(" "));
+    }
+
+    @Override
+    public void showSimpleMessage(String message) {
+        System.out.println(message);
     }
 
 }
