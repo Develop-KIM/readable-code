@@ -11,6 +11,7 @@ import cleancode.minesweeper.tobe.minesweeper.board.positon.CellPosition;
 import cleancode.minesweeper.tobe.minesweeper.board.positon.CellPositions;
 import cleancode.minesweeper.tobe.minesweeper.board.positon.RelativePosition;
 import java.util.List;
+import java.util.Stack;
 
 public class GameBoard {
 
@@ -140,7 +141,7 @@ public class GameBoard {
         board[position.getRowIndex()][position.getColIndex()] = cell;
     }
 
-    private void openSurroundedCells(CellPosition cellPosition) {
+/*    private void openSurroundedCells(CellPosition cellPosition) {
         if (isOpenedCell(cellPosition)) {
             return;
         }
@@ -156,6 +157,41 @@ public class GameBoard {
 
         List<CellPosition> cellPositions = calculateSurroundedPositions(cellPosition, getRowSize(), getColSize());
         cellPositions.forEach(this::openSurroundedCells);
+    }*/
+
+    /**
+     * stack 알고리즘 적용
+     * @param cellPosition
+     */
+    private void openSurroundedCells(CellPosition cellPosition) {
+        Stack<CellPosition> stack = new Stack<>();
+        stack.push(cellPosition);
+
+        while (!stack.isEmpty()) {
+            openAndPushCellAt(stack);
+        }
+    }
+
+    private void openAndPushCellAt(Stack<CellPosition> stack) {
+        CellPosition currentCellPosition = stack.pop();
+
+        if (isOpenedCell(currentCellPosition)) {
+            return;
+        }
+        if (isLandMineCellAt(currentCellPosition)) {
+            return;
+        }
+
+        openOneCellAt(currentCellPosition);
+
+        if (doesCellHaveLandMineCount(currentCellPosition)) {
+            return;
+        }
+
+        List<CellPosition> surroundedPositions = calculateSurroundedPositions(currentCellPosition, getRowSize(), getColSize());
+        for (CellPosition surroundedPosition : surroundedPositions) {
+            stack.push(surroundedPosition);
+        }
     }
 
     private void openOneCellAt(CellPosition cellPosition) {
@@ -200,4 +236,5 @@ public class GameBoard {
     private Cell findCell(CellPosition cellPosition) {
         return board[cellPosition.getRowIndex()][cellPosition.getColIndex()];
     }
+
 }
